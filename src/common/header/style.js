@@ -13,9 +13,7 @@ export const WithLimit = styled.div`
   margin: 0 auto;
 `;
 
-export const Logo = styled.a.attrs({
-  href: '/'
-})`
+export const Logo = styled.div`
   position: absolute;
   top: 0;
   left: 0;
@@ -162,7 +160,7 @@ export const SearchInfoSwitch = styled.span`
     font-size: 12px;
     margin-right: 2px;
     transition: all .2s ease-in;
-    transform: rotate(0deg);
+    /* transform: rotate(0deg); */
     transform-origin: center center; /*旋转中心*/
   }
 `;

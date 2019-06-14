@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
+import { Link } from 'react-router-dom';
 import { CSSTransition } from 'react-transition-group';
 import { connect } from 'react-redux';
 import { actionCreators } from './store';
@@ -19,7 +20,7 @@ import {
   SearchInfoItem
 } from './style';
 
-class Header extends Component {
+class Header extends PureComponent {
 
   getListArea() {
     const { focused, mouseIn, list, page, totalPage, handleMouseEnter, handleMouseLeave, handleChangePage } = this.props;
@@ -43,7 +44,7 @@ class Header extends Component {
           <SearchInfoTitle>
             热门搜索
             <SearchInfoSwitch 
-              onClick={() => { handleChangePage(page, totalPage) }}
+              onClick={() => { handleChangePage(page, totalPage, this.spinIcon) }}
             >
               <i className="iconfont spin" ref={(icon) => {this.spinIcon = icon}}>&#xe851;</i>
               换一换
@@ -60,11 +61,13 @@ class Header extends Component {
   }
 
   render() {
-    const { focused, handleInputFocus, handleInputBlur } = this.props;
+    const { focused, handleInputFocus, handleInputBlur, list } = this.props;
     return (
       <HeaderWrapper>
         <WithLimit>
-          <Logo />
+          <Link to='/'>
+            <Logo />
+          </Link>
           <Nav>
             <NavItem className="left active">首页</NavItem>
             <NavItem className="left">下载App</NavItem>
@@ -80,7 +83,7 @@ class Header extends Component {
               >
                 <NavSearch
                   className={focused ? 'focused': ''}
-                  onFocus={handleInputFocus}
+                  onFocus={() => handleInputFocus(list)}
                   onBlur={handleInputBlur}
                 />
               </CSSTransition>
@@ -115,8 +118,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    handleInputFocus() {
-      dispatch(actionCreators.getList());
+    handleInputFocus(list) {
+      (list.size === 0) && dispatch(actionCreators.getList());
       dispatch(actionCreators.searchFocus());
     },
     handleInputBlur() {
@@ -128,7 +131,15 @@ const mapDispatchToProps = (dispatch) => {
     handleMouseLeave() {
       dispatch(actionCreators.mouseLeave());
     },
-    handleChangePage(page, totalPage) {
+    handleChangePage(page, totalPage, spin) {
+      let originAngle = spin.style.transform.replace(/[^0-9]/ig, '');
+      if (originAngle) {
+        originAngle = parseInt(originAngle, 10);
+      } else {
+        originAngle = 0;
+      }
+      spin.style.transform = 'rotate(' + (originAngle + 360) + 'deg)';
+
       if (page < totalPage) {
         page = page + 1;
       } else {
