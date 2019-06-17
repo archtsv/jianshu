@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { CSSTransition } from 'react-transition-group';
 import { connect } from 'react-redux';
 import { actionCreators } from './store';
+import { actionCreators as loginActionCreators } from '../../pages/login/store';
 import {
   HeaderWrapper,
   WithLimit,
@@ -61,7 +62,7 @@ class Header extends PureComponent {
   }
 
   render() {
-    const { focused, handleInputFocus, handleInputBlur, list } = this.props;
+    const { focused, handleInputFocus, handleInputBlur, list, login, logout } = this.props;
     return (
       <HeaderWrapper>
         <WithLimit>
@@ -71,7 +72,9 @@ class Header extends PureComponent {
           <Nav>
             <NavItem className="left active">首页</NavItem>
             <NavItem className="left">下载App</NavItem>
-            <NavItem className="right">登录</NavItem>
+            {
+              login ? <NavItem className="right" onClick={logout}>退出</NavItem> : <NavItem className="right"><Link to='/login'>登录</Link></NavItem>
+            }
             <NavItem className="right">
               <i className="iconfont">&#xe636;</i>
             </NavItem>
@@ -92,10 +95,12 @@ class Header extends PureComponent {
             </SearchWrapper>
           </Nav>
           <Addition>
-            <Button className="writting">
-              <i className="iconfont">&#xe60c;</i>
-              写文章
-            </Button>
+            <Link to='/write'>
+              <Button className="writting">
+                <i className="iconfont">&#xe60c;</i>
+                写文章
+              </Button>
+            </Link>
             <Button className="reg">注册</Button>
           </Addition>
         </WithLimit>
@@ -113,6 +118,7 @@ const mapStateToProps = (state) => {
     page: state.getIn(['header', 'page']),
     mouseIn: state.getIn(['header', 'mouseIn']),
     totalPage: state.getIn(['header', 'totalPage']),
+    login: state.getIn(['login', 'login'])
   }
 }
 
@@ -146,6 +152,9 @@ const mapDispatchToProps = (dispatch) => {
         page = 1;
       }
       dispatch(actionCreators.changePage(page));
+    },
+    logout() {
+      dispatch(loginActionCreators.logout());
     }
   }
 }

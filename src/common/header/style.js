@@ -8,6 +8,7 @@ export const HeaderWrapper = styled.div`
 
 export const WithLimit = styled.div`
   position: relative;
+  z-index: 1;
   max-width: 1440px;
   height: 100%;
   margin: 0 auto;
@@ -43,6 +44,9 @@ export const NavItem = styled.div`
   &.right {
     float: right;
     color: #969696;
+    a {
+      color: #969696;
+    }
   }
   &.active {
     color: #ea6f5a;
